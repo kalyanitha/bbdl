@@ -1,0 +1,180 @@
+import keras
+from keras.datasets import mnist
+from keras import layers
+import numpy as np
+from keras.callbacks import TensorBoard
+import matplotlib.pyplot as plt
+(X_train, _), (X_test, _) = mnist.load_data()
+X_train = X_train.astype('float32') / 255.
+X_test = X_test.astype('float32') / 255.
+X_train = np.reshape(X_train, (len(X_train), 28, 28, 1))
+X_test = np.reshape(X_test, (len(X_test), 28, 28, 1))
+noise_factor = 0.5
+X_train_noisy = X_train + noise_factor * \
+np.random.normal(loc=0.0, scale=1.0, size=X_train.shape)
+X_test_noisy = X_test + noise_factor * \
+np.random.normal(loc=0.0, scale=1.0, size=X_test.shape)
+X_train_noisy = np.clip(X_train_noisy, 0., 1.)
+X_test_noisy = np.clip(X_test_noisy, 0., 1.)
+n=10
+plt.figure(figsize=(20,2))
+for i in range(1,n+1):
+ ax=plt.subplot(1,n,i)
+ plt.imshow(X_test_noisy[i].reshape(28,28))
+ plt.gray()
+ ax.get_xaxis().set_visible(False)
+ ax.get_yaxis().set_visible(False)
+plt.show()
+input_img = keras.Input(shape=(28, 28, 1))
+x=layers.Conv2D(32,(3,3),activation='relu',padding='same')(input_img)
+x=layers.MaxPooling2D((2,2),padding='same')(x)
+x=layers.Conv2D(32,(3,3),activation='relu',padding='same')(x)
+encoded=layers.MaxPooling2D((2,2),padding='same')(x)
+x= layers.Conv2D(32,(3,3),activation='relu',padding='same')(encoded)
+x=layers.UpSampling2D((2,2))(x)
+x=layers.Conv2D(32,(3,3),activation='relu',padding='same')(x)
+x=layers.UpSampling2D((2,2))(x)
+decoded=layers.Conv2D(1,(3,3),activation='sigmoid',padding='same')(x)
+autoencoder=keras.Model(input_img,decoded)
+autoencoder.compile(optimizer='adam',loss='binary_crossentropy')
+autoencoder.fit(X_train_noisy,X_train,
+epochs=3,
+batch_size=328,
+shuffle=True,
+validation_data=(X_test_noisy,X_test),
+callbacks=[TensorBoard(log_dir='/tmp/tb',histogram_freq=0,write_graph=False)])
+predictions=autoencoder.predict(X_test_noisy)
+
+m=10
+plt.figure(figsize=(20,2))
+for i in range(1,m+1):
+ ax=plt.subplot(1,m,i)
+ plt.imshow(predictions[i].reshape(28,28))
+ plt.gray()
+ ax.get_xaxis().set_visible(False)
+ ax.get_yaxis().set_visible(False)
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Certainly! Let’s break down each line of this code:
+
+1. **`import keras`**: Imports the Keras library for building and training neural networks.
+
+2. **`from keras.datasets import mnist`**: Imports the MNIST dataset from Keras.
+
+3. **`from keras import layers`**: Imports the `layers` module from Keras to build neural network layers.
+
+4. **`import numpy as np`**: Imports the NumPy library for numerical operations.
+
+5. **`from keras.callbacks import TensorBoard`**: Imports the `TensorBoard` callback for monitoring training via TensorBoard.
+
+6. **`import matplotlib.pyplot as plt`**: Imports `matplotlib.pyplot` for plotting images and graphs.
+
+7. **`(X_train, _), (X_test, _) = mnist.load_data()`**: Loads the MNIST dataset, splitting it into training and test sets. Labels are ignored (denoted by `_`) because they are not needed for this task.
+
+8. **`X_train = X_train.astype('float32') / 255.`**: Normalizes the training images to the range [0, 1] by dividing pixel values by 255.
+
+9. **`X_test = X_test.astype('float32') / 255.`**: Normalizes the test images similarly.
+
+10. **`X_train = np.reshape(X_train, (len(X_train), 28, 28, 1))`**: Reshapes each training image into a 4D array with shape `(28, 28, 1)` to include the channel dimension for grayscale images.
+
+11. **`X_test = np.reshape(X_test, (len(X_test), 28, 28, 1))`**: Reshapes each test image similarly.
+
+12. **`noise_factor = 0.5`**: Defines the noise factor to be added to the images.
+
+13. **`X_train_noisy = X_train + noise_factor * np.random.normal(loc=0.0, scale=1.0, size=X_train.shape)`**: Adds Gaussian noise to the training images. The noise has a mean (`loc`) of 0 and a standard deviation (`scale`) of 1.
+
+14. **`X_test_noisy = X_test + noise_factor * np.random.normal(loc=0.0, scale=1.0, size=X_test.shape)`**: Adds Gaussian noise to the test images similarly.
+
+15. **`X_train_noisy = np.clip(X_train_noisy, 0., 1.)`**: Clips the noisy training images to ensure pixel values remain within the range [0, 1].
+
+16. **`X_test_noisy = np.clip(X_test_noisy, 0., 1.)`**: Clips the noisy test images similarly.
+
+17. **`n=10`**: Sets the number of noisy images to display.
+
+18. **`plt.figure(figsize=(20,2))`**: Initializes a new figure with a size of 20x2 inches for plotting.
+
+19. **`for i in range(1, n+1):`**: Loops through the first `n` noisy images.
+
+20. **`ax=plt.subplot(1, n, i)`**: Creates a subplot for each noisy image in a single row.
+
+21. **`plt.imshow(X_test_noisy[i].reshape(28,28))`**: Plots the `i`-th noisy test image reshaped to 28x28 pixels.
+
+22. **`plt.gray()`**: Sets the color map to grayscale.
+
+23. **`ax.get_xaxis().set_visible(False)`**: Hides the x-axis of the subplot.
+
+24. **`ax.get_yaxis().set_visible(False)`**: Hides the y-axis of the subplot.
+
+25. **`plt.show()`**: Displays the figure with noisy images.
+
+26. **`input_img = keras.Input(shape=(28, 28, 1))`**: Creates an input layer for the autoencoder with the shape `(28, 28, 1)` corresponding to the noisy image dimensions.
+
+27. **`x = layers.Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)`**: Adds a convolutional layer with 32 filters, each of size 3x3, ReLU activation, and same padding to maintain spatial dimensions.
+
+28. **`x = layers.MaxPooling2D((2, 2), padding='same')(x)`**: Adds a max-pooling layer with pool size 2x2 and same padding to downsample the feature maps.
+
+29. **`x = layers.Conv2D(32, (3, 3), activation='relu', padding='same')(x)`**: Adds another convolutional layer with 32 filters and ReLU activation.
+
+30. **`encoded = layers.MaxPooling2D((2, 2), padding='same')(x)`**: Adds a max-pooling layer to further downsample the feature maps and obtain the encoded representation.
+
+31. **`x = layers.Conv2D(32, (3, 3), activation='relu', padding='same')(encoded)`**: Adds a convolutional layer to process the encoded representation.
+
+32. **`x = layers.UpSampling2D((2, 2))(x)`**: Adds an upsampling layer to increase the size of the feature maps.
+
+33. **`x = layers.Conv2D(32, (3, 3), activation='relu', padding='same')(x)`**: Adds a convolutional layer to refine the upsampled feature maps.
+
+34. **`x = layers.UpSampling2D((2, 2))(x)`**: Adds another upsampling layer to further increase the feature map size.
+
+35. **`decoded = layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)`**: Adds a final convolutional layer with 1 filter to reconstruct the image. The sigmoid activation outputs pixel values between 0 and 1.
+
+36. **`autoencoder = keras.Model(input_img, decoded)`**: Defines the autoencoder model that maps `input_img` to `decoded`.
+
+37. **`autoencoder.compile(optimizer='adam', loss='binary_crossentropy')`**: Compiles the autoencoder model with the Adam optimizer and binary cross-entropy loss function.
+
+38. **`autoencoder.fit(X_train_noisy, X_train, epochs=3, batch_size=328, shuffle=True, validation_data=(X_test_noisy, X_test), callbacks=[TensorBoard(log_dir='/tmp/tb', histogram_freq=0, write_graph=False)])`**: Trains the autoencoder for 3 epochs using noisy images as input and original images as targets. Uses TensorBoard for monitoring and validation data to evaluate performance.
+
+39. **`predictions = autoencoder.predict(X_test_noisy)`**: Uses the trained autoencoder to predict denoised images from noisy test images.
+
+40. **`m=10`**: Sets the number of images to display.
+
+41. **`plt.figure(figsize=(20,2))`**: Initializes a new figure with a size of 20x2 inches for plotting.
+
+42. **`for i in range(1, m+1):`**: Loops through the first `m` images.
+
+43. **`ax=plt.subplot(1, m, i)`**: Creates a subplot for each reconstructed image in a single row.
+
+44. **`plt.imshow(predictions[i].reshape(28,28))`**: Plots the `i`-th predicted (denoised) image reshaped to 28x28 pixels.
+
+45. **`plt.gray()`**: Sets the color map to grayscale.
+
+46. **`ax.get_xaxis().set_visible(False)`**: Hides the x-axis of the subplot.
+
+47. **`ax.get_yaxis().set_visible(False)`**: Hides the y-axis of the subplot.
+
+48. **`plt.show()`**: Displays the figure with reconstructed images.
+
+### Summary
+This code:
+- Loads and preprocesses the MNIST dataset.
+- Adds Gaussian noise to the images.
+- Defines, trains, and evaluates a convolutional autoencoder to denoise images.
+- Displays noisy input images and their denoised versions for comparison.

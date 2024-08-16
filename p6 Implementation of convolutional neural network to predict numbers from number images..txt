@@ -1,0 +1,109 @@
+from keras.datasets import mnist
+from tensorflow.keras.utils import to_categorical
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, Flatten
+import matplotlib.pyplot as plt
+import numpy as np
+(X_train, Y_train), (X_test, Y_test) = mnist.load_data()
+plt.imshow(X_train[0])
+plt.show
+print(X_train[0].shape)
+X_train=X_train.reshape(60000,28,28,1)
+X_test=X_test.reshape(10000,28,28,1)
+Y_train=to_categorical(Y_train)
+Y_test=to_categorical(Y_test)
+Y_train[0]
+print(Y_train[0])
+model=Sequential()
+model.add(Conv2D(64, kernel_size=3, activation='relu', input_shape=(28,28,1)))
+model.add(Conv2D(32, kernel_size=3, activation='relu'))
+model.add(Flatten())
+model.add(Dense(10, activation='softmax'))
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.fit(X_train, Y_train, validation_data=(X_test, Y_test), epochs=1)
+print(model.predict(X_test[:4]))
+print(Y_test[:4])
+
+
+
+
+
+
+
+
+
+
+
+
+
+Certainly! Let’s break down each line of this code to understand what it does:
+
+1. **`from keras.datasets import mnist`**: Imports the MNIST dataset from Keras's dataset library. MNIST contains handwritten digits (0-9) images for training and testing.
+
+2. **`from tensorflow.keras.utils import to_categorical`**: Imports the `to_categorical` function from TensorFlow's Keras utilities to convert integer labels into one-hot encoded vectors.
+
+3. **`from keras.models import Sequential`**: Imports the `Sequential` class from Keras, which is used to create a linear stack of layers for the neural network.
+
+4. **`from keras.layers import Dense, Conv2D, Flatten`**: Imports the `Dense`, `Conv2D`, and `Flatten` layers from Keras:
+   - `Dense`: Fully connected layer.
+   - `Conv2D`: 2D convolutional layer for processing image data.
+   - `Flatten`: Flattens the input to a 1D array to be used by dense layers.
+
+5. **`import matplotlib.pyplot as plt`**: Imports `matplotlib.pyplot` for plotting images and graphs.
+
+6. **`import numpy as np`**: Imports the NumPy library for numerical operations.
+
+7. **`(X_train, Y_train), (X_test, Y_test) = mnist.load_data()`**: Loads the MNIST dataset, splitting it into training and testing sets:
+   - `X_train`: Training images.
+   - `Y_train`: Training labels.
+   - `X_test`: Testing images.
+   - `Y_test`: Testing labels.
+
+8. **`plt.imshow(X_train[0])`**: Displays the first image from the training set using matplotlib. This shows what an MNIST digit looks like.
+
+9. **`plt.show`**: This line is intended to display the image plotted by `plt.imshow()`. However, it should be `plt.show()` (with parentheses) to actually execute the display command.
+
+10. **`print(X_train[0].shape)`**: Prints the shape of the first image in the training set, which should be `(28, 28)` for the MNIST dataset.
+
+11. **`X_train=X_train.reshape(60000,28,28,1)`**: Reshapes the training images from `(28, 28)` to `(28, 28, 1)`. The last dimension of 1 represents the single color channel (grayscale).
+
+12. **`X_test=X_test.reshape(10000,28,28,1)`**: Reshapes the test images similarly to `(28, 28, 1)`.
+
+13. **`Y_train=to_categorical(Y_train)`**: Converts the integer labels in `Y_train` to one-hot encoded vectors. Each label is converted to a vector of length 10 (for 10 classes), with a 1 at the index corresponding to the label and 0s elsewhere.
+
+14. **`Y_test=to_categorical(Y_test)`**: Converts the integer labels in `Y_test` to one-hot encoded vectors in the same way as `Y_train`.
+
+15. **`Y_train[0]`**: Displays the one-hot encoded vector for the first training label. This is included to verify the transformation.
+
+16. **`print(Y_train[0])`**: Prints the one-hot encoded vector of the first training label to check the conversion.
+
+17. **`model=Sequential()`**: Initializes a new Sequential model.
+
+18. **`model.add(Conv2D(64, kernel_size=3, activation='relu', input_shape=(28,28,1)))`**: Adds a 2D convolutional layer with 64 filters, each of size 3x3. Uses ReLU activation and specifies the input shape as `(28, 28, 1)`.
+
+19. **`model.add(Conv2D(32, kernel_size=3, activation='relu'))`**: Adds another 2D convolutional layer with 32 filters, each of size 3x3. Uses ReLU activation.
+
+20. **`model.add(Flatten())`**: Flattens the 3D output of the convolutional layers into a 1D vector, which is then passed to the dense layers.
+
+21. **`model.add(Dense(10, activation='softmax'))`**: Adds a dense layer with 10 units (one for each class) and a softmax activation function. This layer outputs probabilities for each of the 10 classes.
+
+22. **`model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])`**: Compiles the model with:
+   - Adam optimizer for updating the weights.
+   - Categorical cross-entropy loss function for multi-class classification.
+   - Accuracy metric to evaluate the model's performance.
+
+23. **`model.fit(X_train, Y_train, validation_data=(X_test, Y_test), epochs=1)`**: Trains the model on the training data with validation on the test data for 1 epoch. The `validation_data` parameter evaluates the model on the test set after each epoch.
+
+24. **`print(model.predict(X_test[:4]))`**: Predicts the class probabilities for the first 4 images in the test set. The output shows the predicted probabilities for each class.
+
+25. **`print(Y_test[:4])`**: Prints the one-hot encoded vectors for the first 4 test labels. This is used to compare with the predicted results.
+
+### Summary
+
+The code:
+- Loads and preprocesses the MNIST dataset.
+- Defines and compiles a simple convolutional neural network (CNN) with two convolutional layers.
+- Trains the model on the MNIST training set and evaluates it on the MNIST test set.
+- Prints predictions and true labels for a few test samples to verify model performance.
+
+Note: Remember to correct `plt.show` to `plt.show()` to properly display the image plot.

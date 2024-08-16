@@ -1,0 +1,134 @@
+import keras
+from keras import layers
+from keras.datasets import mnist
+import numpy as np
+import matplotlib.pyplot as plt
+encoding_dim=32
+input_img=keras.Input(shape=(784,))
+encoded=layers.Dense(encoding_dim,activation='relu')(input_img)
+decoded=layers.Dense(784,activation='sigmoid')(encoded)
+autoencoder=keras.Model(input_img,decoded)
+encoder=keras.Model(input_img,encoded)
+encoded_input=keras.Input(shape=(encoding_dim,))
+decoder_layer=autoencoder.layers[-1]
+decoder=keras.Model(encoded_input,decoder_layer(encoded_input))
+autoencoder.compile(optimizer='adam',loss='binary_crossentropy')
+(x_train,_),(x_test,_)=mnist.load_data()
+x_train=x_train.astype('float32')/255.
+x_test=x_test.astype('float32')/25
+x_train=x_train.reshape((len(x_train),np.prod(x_train.shape[1:])))
+x_test=x_test.reshape((len(x_test),np.prod(x_test.shape[1:])))
+print(x_train.shape)
+print(x_test.shape)
+autoencoder.fit(x_train,x_train,epochs=13,batch_size=256,shuffle=True,validation_data=(x_test,x_test))
+encoded_imgs=encoder.predict(x_test)
+decoded_imgs=decoder.predict(encoded_imgs)
+n=10
+plt.figure(figsize=(20,4))
+for i in range(n):
+ ax=plt.subplot(2,n,i+1)
+ plt.imshow(x_test[i].reshape(28,28))
+ plt.gray()
+ ax.get_xaxis().set_visible(False)
+ ax.get_yaxis().set_visible(False)
+ ax=plt.subplot(2,n,i+1+n)
+ plt.imshow(decoded_imgs[i].reshape(28,28))
+ plt.gray()
+ ax.get_xaxis().set_visible(False)
+ ax.get_yaxis().set_visible(False)
+ plt.show()
+
+
+
+
+
+
+
+
+
+
+Certainly! Let’s go through each line of this code:
+
+1. **`import keras`**: Imports the Keras library, a high-level neural networks API.
+
+2. **`from keras import layers`**: Imports the `layers` module from Keras to build neural network layers.
+
+3. **`from keras.datasets import mnist`**: Imports the MNIST dataset from Keras, which contains images of handwritten digits.
+
+4. **`import numpy as np`**: Imports the NumPy library for numerical operations.
+
+5. **`import matplotlib.pyplot as plt`**: Imports `matplotlib.pyplot` for plotting images and graphs.
+
+6. **`encoding_dim=32`**: Defines the dimensionality of the encoding space (i.e., the size of the compressed representation).
+
+7. **`input_img=keras.Input(shape=(784,))`**: Creates an input layer with a shape of `(784,)`, corresponding to the flattened 28x28 MNIST images.
+
+8. **`encoded=layers.Dense(encoding_dim,activation='relu')(input_img)`**: Adds a dense layer with 32 units and ReLU activation, which compresses the input data into the encoding dimension.
+
+9. **`decoded=layers.Dense(784,activation='sigmoid')(encoded)`**: Adds a dense layer that reconstructs the data back to its original shape (784 units) with a sigmoid activation function, used to output pixel values between 0 and 1.
+
+10. **`autoencoder=keras.Model(input_img,decoded)`**: Defines the autoencoder model that maps `input_img` to `decoded`. This model learns to reconstruct the input data.
+
+11. **`encoder=keras.Model(input_img,encoded)`**: Defines a separate encoder model that maps `input_img` to the compressed `encoded` representation.
+
+12. **`encoded_input=keras.Input(shape=(encoding_dim,))`**: Creates an input layer for the decoder model that accepts the encoded representation with shape `(32,)`.
+
+13. **`decoder_layer=autoencoder.layers[-1]`**: Extracts the last layer (decoder layer) from the autoencoder model.
+
+14. **`decoder=keras.Model(encoded_input,decoder_layer(encoded_input))`**: Defines a decoder model that reconstructs the data from the encoded representation using the last layer of the autoencoder.
+
+15. **`autoencoder.compile(optimizer='adam',loss='binary_crossentropy')`**: Compiles the autoencoder model with Adam optimizer and binary cross-entropy loss function, suitable for reconstruction tasks.
+
+16. **`(x_train,_),(x_test,_) = mnist.load_data()`**: Loads the MNIST dataset, where `_` is used to ignore the labels since they are not needed for training the autoencoder.
+
+17. **`x_train=x_train.astype('float32')/255.`**: Normalizes the training images to the range [0, 1] by dividing by 255.
+
+18. **`x_test=x_test.astype('float32')/255`**: Normalizes the test images similarly.
+
+19. **`x_train=x_train.reshape((len(x_train),np.prod(x_train.shape[1:])))`**: Flattens each 28x28 image in the training set into a 784-dimensional vector.
+
+20. **`x_test=x_test.reshape((len(x_test),np.prod(x_test.shape[1:])))`**: Flattens each 28x28 image in the test set into a 784-dimensional vector.
+
+21. **`print(x_train.shape)`**: Prints the shape of the flattened training data, which should be `(60000, 784)`.
+
+22. **`print(x_test.shape)`**: Prints the shape of the flattened test data, which should be `(10000, 784)`.
+
+23. **`autoencoder.fit(x_train, x_train, epochs=13, batch_size=256, shuffle=True, validation_data=(x_test, x_test))`**: Trains the autoencoder for 13 epochs using the training data. The target data is the same as the input data (`x_train`), indicating the model is learning to reconstruct the input. Validation is performed on the test set.
+
+24. **`encoded_imgs=encoder.predict(x_test)`**: Uses the encoder model to predict the encoded (compressed) representations of the test images.
+
+25. **`decoded_imgs=decoder.predict(encoded_imgs)`**: Uses the decoder model to reconstruct the images from the encoded representations.
+
+26. **`n=10`**: Sets the number of images to display.
+
+27. **`plt.figure(figsize=(20,4))`**: Initializes a new figure with a size of 20x4 inches for plotting.
+
+28. **`for i in range(n):`**: Iterates over the first `n` images.
+
+29. **`ax=plt.subplot(2,n,i+1)`**: Creates a subplot for displaying the original images.
+
+30. **`plt.imshow(x_test[i].reshape(28,28))`**: Plots the `i`-th test image reshaped to 28x28 pixels.
+
+31. **`plt.gray()`**: Sets the color map to grayscale.
+
+32. **`ax.get_xaxis().set_visible(False)`**: Hides the x-axis of the subplot.
+
+33. **`ax.get_yaxis().set_visible(False)`**: Hides the y-axis of the subplot.
+
+34. **`ax=plt.subplot(2,n,i+1+n)`**: Creates a subplot for displaying the reconstructed images.
+
+35. **`plt.imshow(decoded_imgs[i].reshape(28,28))`**: Plots the `i`-th reconstructed image reshaped to 28x28 pixels.
+
+36. **`plt.gray()`**: Sets the color map to grayscale.
+
+37. **`ax.get_xaxis().set_visible(False)`**: Hides the x-axis of the subplot.
+
+38. **`ax.get_yaxis().set_visible(False)`**: Hides the y-axis of the subplot.
+
+39. **`plt.show()`**: Displays the figure with the original and reconstructed images.
+
+### Summary
+This code defines, trains, and evaluates an autoencoder on the MNIST dataset. It:
+- Creates an autoencoder model to compress and reconstruct images.
+- Trains the model on MNIST images.
+- Displays some original and reconstructed images to visually assess the performance of the autoencoder.
