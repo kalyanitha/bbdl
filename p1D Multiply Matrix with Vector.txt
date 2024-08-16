@@ -1,0 +1,67 @@
+x=np.array([1,2,3,7,3,5,2])
+y=np.array([[1],[3],[5],[7],[8],[8],[2]])
+c=x*y
+print("Multiplication of Vector and Matrix: \n",c)
+print("\n")
+
+
+
+
+
+
+Code Breakdown
+python
+Copy code
+
+x = np.array([1, 2, 3, 7, 3, 5, 2])
+np.array([1, 2, 3, 7, 3, 5, 2]): This creates a 1-dimensional NumPy array x with 7 elements. This array can be thought of as a vector.
+python
+Copy code
+
+y = np.array([[1], [3], [5], [7], [8], [8], [2]])
+np.array([[1], [3], [5], [7], [8], [8], [2]]): This creates a 2-dimensional NumPy array y with 7 rows and 1 column. Each element of this array is enclosed in its own sub-array, so it is effectively a column vector.
+Multiplication
+python
+Copy code
+c = x * y
+x * y: This line performs element-wise multiplication of x and y. Since x is a 1D array (a row vector) and y is a 2D array (a column vector), NumPy uses broadcasting to perform this operation.
+Broadcasting Explanation
+Broadcasting is a set of rules NumPy uses to perform element-wise operations on arrays of different shapes. Here’s how it works in this case:
+
+Shape Alignment: NumPy aligns the shapes of x and y to perform element-wise operations. x (shape (7,)) is broadcasted to match the shape of y (shape (7, 1)). In this context, x is considered as if it were a column vector with shape (7, 1) for the purpose of broadcasting.
+
+Element-wise Multiplication:
+
+Each element of x is multiplied by the corresponding element of y.
+The result is a new 2D array where each element in the row of x is multiplied by each corresponding element in the column of y.
+So the multiplication x * y results in:
+
+css
+Copy code
+[[1*1],
+ [2*3],
+ [3*5],
+ [7*7],
+ [3*8],
+ [5*8],
+ [2*2]]
+=
+[[ 1],
+ [ 6],
+ [15],
+ [49],
+ [24],
+ [40],
+ [ 4]]
+Printing the Result
+python
+Copy code
+
+print("Multiplication of Vector and Matrix: \n", c)
+print("\n")
+print("Multiplication of Vector and Matrix: \n", c): This prints the result of the multiplication operation c. The result is displayed with a message indicating that it’s the result of the vector and matrix multiplication.
+Summary
+
+Vector x: A 1D array (vector) with 7 elements.
+Matrix y: A 2D column vector (7x1 matrix).
+Element-wise Multiplication: The code multiplies each element of x by the corresponding element of y, using broadcasting to align their shapes for the multiplication. The result is a 2D array where each element of x is multiplied by the corresponding element of y.

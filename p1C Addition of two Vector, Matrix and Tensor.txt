@@ -1,0 +1,56 @@
+x=np.array([1,2,3,4])
+y=np.array([5,6,7,8])
+z=x+y
+print("Addition of two Matrix: ",z)
+print("\n")
+A=np.array([[1,2],[3,4],[5,6]])
+B=np.array([[2,5],[7,4],[4,3]])
+C=A*B
+print("Addition of two Vector: \n",C)
+print("\n")
+tensor_add=tf.add(tensor_A,tensor_B)
+print("Addition of two Tensor: ",tensor_add)
+print("\n")
+
+
+
+
+
+np.array([1, 2, 3, 4]) and np.array([5, 6, 7, 8]): These create two 1D arrays (vectors) x and y.
+
+x + y: This performs element-wise addition of vectors x and y. Each element in x is added to the corresponding element in y. The result z is:
+
+
+Matrix Addition (incorrectly labeled)
+Copy code
+
+A = np.array([[1, 2], [3, 4], [5, 6]])
+B = np.array([[2, 5], [7, 4], [4, 3]])
+C = A * B
+print("Addition of two Matrix: \n", C)
+print("\n")
+
+np.array([[1, 2], [3, 4], [5, 6]]) and np.array([[2, 5], [7, 4], [4, 3]]): These create two 3x2 matrices A and B.
+A * B: This actually performs element-wise multiplication, not addition. The result C should be:
+Tensor Addition
+Copy code
+
+tensor_add = tf.add(tensor_A, tensor_B)
+print("Addition of two Tensor: ", tensor_add)
+print("\n")
+tf.add(tensor_A, tensor_B): This performs element-wise addition of the tensors tensor_A and tensor_B. The tensor_A and tensor_B are:
+lua
+Copy code
+
+tensor_A = [[4, 2]]
+tensor_B = [[7, 4]]
+The addition of these tensors is:
+lua
+Copy code
+[[4+7, 2+4]]
+=
+[[11,  6]]
+Summary
+Vector Addition: Adds corresponding elements of two vectors.
+Matrix Addition: Should be A + B for adding corresponding elements of two matrices. The code incorrectly multiplies matrices instead.
+Tensor Addition: Adds corresponding elements of two tensors using TensorFlow.

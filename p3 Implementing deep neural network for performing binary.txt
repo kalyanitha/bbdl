@@ -1,0 +1,65 @@
+pip install scikeras
+from pandas import read_csv
+from keras.models import Sequential
+from keras.layers import Dense
+from scikeras.wrappers import KerasClassifier
+from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import StratifiedKFold
+dataframe=read_csv('sonar.csv',header=None)
+dataset=dataframe.values
+X=dataset[:,0:60].astype(float)
+Y=dataset[:,60]
+encoder=LabelEncoder()
+encoder.fit(Y)
+encoded_y=encoder.transform(Y)
+def create_baseline():
+model=Sequential()
+model.add(Dense(60,input_dim=60,activation='relu'))
+model.add(Dense(1,activation='sigmoid'))
+model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
+return model
+
+estimator=KerasClassifier(model=create_baseline,epochs=10,batch_size=5,verbose=0)
+KFold=StratifiedKFold(n_splits=10,shuffle=True)
+results=cross_val_score(estimator,X,encoded_y,cv=KFold)
+print("\n")
+print("Baseline: %.2f%% (%.2f%%)"%(results.mean()*100,results.std()*100))
+
+
+
+
+
+
+
+
+
+
+
+
+
+pip install scikeras: Installs the scikeras library, which integrates Keras with Scikit-Learn.
+
+from pandas import read_csv: Imports the read_csv function from the pandas library to handle CSV files.
+
+from keras.models import Sequential: Imports the Sequential class from Keras, which is used to create a linear stack of layers.
+
+from keras.layers import Dense: Imports the Dense layer, a fully connected layer used in the neural network.
+
+from scikeras.wrappers import KerasClassifier: Imports KerasClassifier, a wrapper that allows Keras models to be used with Scikit-Learn's functions.
+
+from sklearn.model_selection import cross_val_score: Imports the cross_val_score function, used to evaluate the model's performance using cross-validation.
+
+from sklearn.preprocessing import LabelEncoder: Imports LabelEncoder to convert categorical labels into numeric format.
+
+from sklearn.model_selection import StratifiedKFold: Imports StratifiedKFold, a cross-validation method that preserves the percentage of samples for each class.
+
+dataframe=read_csv('sonar.csv',header=None): Reads the CSV file 'sonar.csv' into a DataFrame, without a header row.
+
+dataset=dataframe.values: Converts the DataFrame into a NumPy array for easier manipulation.
+
+X=dataset[:,0:60].astype(float): Extracts the feature columns (first 60 columns) and converts them to floating-point numbers.
+
+Y=dataset[:,60]: Extracts the label column (the 61st column) which contains the target values.
+
+encoder=LabelEncoder(): Creates an instance of LabelEncoder to

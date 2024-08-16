@@ -1,0 +1,99 @@
+U=[2,-3]
+V=[1,3]
+dotproduct=np.dot(U,V)
+print("Matrix dot product: ",dotproduct)
+print("\n")
+A=np.array([[6,1,1],
+[4,-2,5],
+[2,8,7]])
+print("Inverse of Matrix: \n",np.linalg.inv(A))
+print("\n")
+
+
+
+
+
+1. Importing the Required Library
+Although not shown in your snippet, it’s important to note that this code uses numpy, a popular library in Python for numerical operations. Typically, you would import it with:
+
+python
+Copy code
+
+import numpy as np
+2. Calculating the Dot Product
+python
+Copy code
+
+U = [2, -3]
+V = [1, 3]
+dotproduct = np.dot(U, V)
+print("Matrix dot product: ", dotproduct)
+U = [2, -3] and V = [1, 3] define two lists (or vectors).
+np.dot(U, V) calculates the dot product of these two vectors. The dot product is a single number calculated by multiplying corresponding elements of the vectors and then adding those products together. For U and V, it’s calculated as:
+(
+2
+×
+1
+)
++
+(
+−
+3
+×
+3
+)
+=
+2
+−
+9
+=
+−
+7
+(2×1)+(−3×3)=2−9=−7
+print("Matrix dot product: ", dotproduct) prints the result, which is -7.
+3. Working with Matrices
+python
+Copy code
+
+A = np.array([[6, 1, 1],
+              [4, -2, 5],
+              [2, 8, 7]])
+print("Inverse of Matrix: \n", np.linalg.inv(A))
+A = np.array([[6, 1, 1], [4, -2, 5], [2, 8, 7]]) creates a 3x3 matrix A with the specified values. The matrix A looks like this:
+
+[
+6
+1
+1
+4
+−
+2
+5
+2
+8
+7
+]
+​ 
+6
+4
+2
+  
+1
+−2
+
+  
+1
+5
+7
+
+np.linalg.inv(A) computes the inverse of matrix A. The inverse of a matrix is another matrix that, when multiplied with the original matrix, gives the identity matrix. In practical terms, it's used to solve systems of linear equations and other applications in linear algebra.
+
+print("Inverse of Matrix: \n", np.linalg.inv(A)) prints the inverse of matrix A.
+
+Summary
+Dot Product Calculation: Computes how much one vector points in the direction of another.
+Matrix Inversion: Finds a matrix that reverses the effect of the original matrix, useful in various mathematical computations.
+This code uses numpy to perform these operations efficiently, making it a handy tool for numerical and matrix computations.
+
+
+

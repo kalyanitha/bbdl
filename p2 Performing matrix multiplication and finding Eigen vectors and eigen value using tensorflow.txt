@@ -1,0 +1,123 @@
+import tensorflow as tf
+x= tf.constant([1,2,3,4,5,6],shape=[2,3])
+print(x)
+y= tf.constant([7,8,9,10,11,12],shape=[3,2])
+print(y)
+z= tf.matmul(x,y)
+print("\n")
+print("Multiplying the matrices: ")
+print(z)
+print("\n")
+e_matrix_A=tf.random.uniform([2,2],minval=3,maxval=10,dtype=tf.float32,name="matrixA")
+print("\n")
+print("Matrix A: \n{}\n\n".format(e_matrix_A))
+eigan_values_A,eigan_vectors_A=tf.linalg.eigh(e_matrix_A)
+print("Eigan Vectors: \n{}\n\nEigan Values:\n{}\n\n".format(eigan_vectors_A,eigan_values_A))
+
+
+
+
+
+
+
+
+1. Importing TensorFlow
+python
+Copy code
+import tensorflow as tf
+This line imports TensorFlow, a powerful library for machine learning and numerical computations. It's usually abbreviated as tf.
+2. Creating and Printing Matrices
+python
+Copy code
+x = tf.constant([1, 2, 3, 4, 5, 6], shape=[2, 3])
+print(x)
+tf.constant([1, 2, 3, 4, 5, 6], shape=[2, 3]) creates a constant tensor (a multi-dimensional array) x with the values [1, 2, 3, 4, 5, 6] and reshapes it into a 2x3 matrix:
+
+[
+1
+2
+3
+4
+5
+6
+]
+[ 
+1
+4
+​
+  
+2
+5
+​
+  
+3
+6
+​
+ ]
+print(x) displays this matrix.
+
+python
+Copy code
+y = tf.constant([7, 8, 9, 10, 11, 12], shape=[3, 2])
+print(y)
+tf.constant([7, 8, 9, 10, 11, 12], shape=[3, 2]) creates another constant tensor y with the values [7, 8, 9, 10, 11, 12] and reshapes it into a 3x2 matrix:
+
+[
+7
+8
+9
+10
+11
+12
+]
+​
+  
+7
+9
+11
+​
+  
+8
+10
+12
+​
+  
+​
+ 
+print(y) displays this matrix.
+
+3. Matrix Multiplication
+python
+Copy code
+
+z = tf.matmul(x, y)
+print("\n")
+print("Multiplying the matrices: ")
+print(z)
+
+tf.matmul(x, y) multiplies the matrices x and y. Matrix multiplication is a way of combining two matrices. The result z will be a new matrix.
+
+ Generating a Random Matrix
+python
+Copy code
+e_matrix_A = tf.random.uniform([2, 2], minval=3, maxval=10, dtype=tf.float32, name="matrixA")
+print("\n")
+print("Matrix A: \n{}\n\n".format(e_matrix_A))
+tf.random.uniform([2, 2], minval=3, maxval=10, dtype=tf.float32, name="matrixA") creates a 2x2 matrix e_matrix_A with random values between 3 and 10. The dtype=tf.float32 specifies that the numbers should be floating-point numbers.
+print("Matrix A: \n{}\n\n".format(e_matrix_A)) prints the randomly generated matrix A.
+5. Eigenvalue and Eigenvector Calculation
+python
+Copy code
+eigan_values_A, eigan_vectors_A = tf.linalg.eigh(e_matrix_A)
+print("Eigen Vectors: \n{}\n\nEigen Values:\n{}\n\n".format(eigan_vectors_A, eigan_values_A))
+tf.linalg.eigh(e_matrix_A) computes the eigenvalues and eigenvectors of the matrix e_matrix_A.
+
+Eigenvalues are scalars that provide information about the matrix's transformation properties.
+Eigenvectors are vectors that, when multiplied by the matrix, only get scaled by the corresponding eigenvalue.
+print("Eigen Vectors: \n{}\n\nEigen Values:\n{}\n\n".format(eigan_vectors_A, eigan_values_A)) prints both the eigenvalues and eigenvectors.
+
+Summary
+Matrix Creation and Display: Defines and prints 2x3 and 3x2 matrices.
+Matrix Multiplication: Multiplies the two matrices and prints the result.
+Random Matrix Generation: Creates and prints a random 2x2 matrix.
+Eigenvalue/Eigenvector Calculation: Computes and prints the eigenvalues and eigenvectors of the random matrix.

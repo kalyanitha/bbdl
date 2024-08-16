@@ -1,0 +1,182 @@
+import numpy as np
+from sklearn.datasets import load_wine
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
+from keras.layers import Dense, Input, concatenate, Dropout
+from keras.models import Model
+from tensorflow.keras import optimizers
+optimizers.RMSprop
+optimizers.Adam
+dataset = load_wine()
+ensemble_num = 10
+bootstrap_size = 0.8
+training_size = 0.8
+num_hidden_neurosn = 10
+dropout = 0.25
+epochs = 100
+batch = 10
+temp = []
+scaler = MinMaxScaler()
+one_hot = OneHotEncoder()
+dataset['data'] = scaler.fit_transform(dataset['data'])
+dataset['target'] = one_hot.fit_transform(np.reshape(dataset['target'], (-1, 1))).toarray()
+for i in range(len(dataset.data)):
+temp.append([dataset['data'][i], np.array(dataset['target'][i])])
+temp = np.array(temp, dtype=object)
+np.random.shuffle(temp)
+#holdout training and test stop index
+stop = int(training_size*len(dataset.data))
+train_X = np.array([x for x in temp[:stop, 0]])
+train_Y = np.array([x for x in temp[:stop, 1]])
+test_X = np.array([x for x in temp[stop:, 0]])
+test_Y = np.array([x for x in temp[stop:, 1]])
+num_hidden_neurons = 64
+sub_net_outputs = []
+sub_net_inputs = []
+for i in range(ensemble_num):
+#two hidden layers to keep it simple
+# specify input shape to the shape of the training set
+net_input = Input(shape=(train_X.shape[1],))
+sub_net_inputs.append(net_input)
+Y = Dense(num_hidden_neurons)(net_input)
+Y = Dense(num_hidden_neurons)(Y)
+Y = Dropout(dropout)(Y)
+# sub_nets contains the output tensors
+sub_net_outputs.append(Y)
+Y = concatenate(sub_net_outputs)
+Y = Dense(train_Y[0].shape[0], activation='softmax')(Y)
+model = Model(inputs=sub_net_inputs, outputs=Y)
+model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
+print('\n')
+print("7_Aditya Hadap")
+print("Begin training...")
+model.fit([train_X] * ensemble_num, train_Y, validation_data=[[test_X] * ensemble_num,
+test_Y], epochs=epochs, batch_size=batch)
+print("Training complete...")
+np.set_printoptions(precision=2, suppress=True)
+for i in range(len(test_X)):
+print("Prediction: " + str(model.predict([test_X[i].reshape(1, test_X[i].shape[0])] *
+ensemble_num)) + " | True: " + str(test_Y[i]))
+
+
+
+
+
+
+
+
+
+
+import numpy as np: Imports the NumPy library for numerical operations and handling arrays.
+from sklearn.datasets import load_wine: Imports the load_wine function from Scikit-Learn to load the wine dataset.
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder: Imports MinMaxScaler for feature scaling and OneHotEncoder for encoding categorical labels.
+from keras.layers import Dense, Input, concatenate, Dropout: Imports various Keras layers needed for building the neural network model.
+from keras.models import Model: Imports the Model class to create a Keras model.
+from tensorflow.keras import optimizers: Imports optimizers from TensorFlow/Keras.
+Optimization Configuration
+optimizers.RMSprop and optimizers.Adam: These lines are referencing the RMSprop and Adam optimizers, but they are not actually used in the code. This is likely an oversight or placeholder.
+ptimizers.RMSprop: References the RMSprop optimizer, but it isn't used in this code snippet.
+
+optimizers.Adam: References the Adam optimizer, but it isn't used in this code snippet.
+
+dataset = load_wine(): Loads the wine dataset, which contains features and labels for wine samples.
+
+ensemble_num = 10: Sets the number of models in the ensemble to 10.
+
+bootstrap_size = 0.8: Defines the fraction of the dataset used for each bootstrap sample, but it isn't used in this code snippet.
+
+training_size = 0.8: Specifies that 80% of the dataset will be used for training and 20% for testing.
+
+num_hidden_neurons = 10: Sets the number of neurons in each hidden layer of the neural network to 10.
+
+dropout = 0.25: Sets the dropout rate to 25% to reduce overfitting.
+
+epochs = 100: Specifies the number of training epochs.
+
+batch = 10: Sets the batch size for training to 10.
+
+temp = []: Initializes an empty list to temporarily hold data and labels.
+
+scaler = MinMaxScaler(): Creates an instance of MinMaxScaler to normalize feature values.
+
+one_hot = OneHotEncoder(): Creates an instance of OneHotEncoder to convert categorical labels into a one-hot encoded format.
+
+dataset['data'] = scaler.fit_transform(dataset['data']): Scales feature values to the range [0, 1] using MinMaxScaler.
+
+dataset['target'] = one_hot.fit_transform(np.reshape(dataset['target'], (-1, 1))).toarray(): One-hot encodes the target labels and reshapes them into an array.
+
+for i in range(len(dataset.data)):: Loops through each data sample.
+
+temp.append([dataset['data'][i], np.array(dataset['target'][i])]): Appends each data sample and its corresponding encoded label to the temp list.
+
+temp = np.array(temp, dtype=object): Converts the temp list into a NumPy array with object dtype.
+
+np.random.shuffle(temp): Shuffles the temp array to randomize the order of the samples.
+
+stop = int(training_size*len(dataset.data)): Calculates the index at which to split the dataset into training and testing sets based on the training size.
+
+train_X = np.array([x for x in temp[:stop, 0]]): Extracts training features from the temp array.
+
+train_Y = np.array([x for x in temp[:stop, 1]]): Extracts training labels from the temp array.
+
+test_X = np.array([x for x in temp[stop:, 0]]): Extracts testing features from the temp array.
+
+test_Y = np.array([x for x in temp[stop:, 1]]): Extracts testing labels from the temp array.
+
+num_hidden_neurons = 64: Sets the number of neurons in each hidden layer of the neural network to 64 (note: this value overrides the earlier num_hidden_neurons value of 10).
+
+sub_net_outputs = []: Initializes a list to hold the outputs of the sub-networks (models).
+
+sub_net_inputs = []: Initializes a list to hold the inputs for each sub-network.
+
+for i in range(ensemble_num):: Loops through the number of models in the ensemble.
+
+net_input = Input(shape=(train_X.shape[1],)): Defines the input layer for the sub-network with a shape matching the training data.
+
+sub_net_inputs.append(net_input): Adds the input layer to the list of sub-network inputs.
+
+Y = Dense(num_hidden_neurons)(net_input): Adds a Dense layer with num_hidden_neurons units to the sub-network.
+
+Y = Dense(num_hidden_neurons)(Y): Adds another Dense layer with num_hidden_neurons units.
+
+Y = Dropout(dropout)(Y): Applies dropout to the layer to prevent overfitting.
+
+sub_net_outputs.append(Y): Adds the output of this sub-network to the list of sub-network outputs.
+
+Y = concatenate(sub_net_outputs): Concatenates the outputs of all sub-networks.
+
+Y = Dense(train_Y[0].shape[0], activation='softmax')(Y): Adds a Dense layer with a number of units equal to the number of classes and a softmax activation for classification.
+
+model = Model(inputs=sub_net_inputs, outputs=Y): Defines the Keras Model with the specified inputs and outputs.
+
+model.compile(optimizer='rmsprop', loss='categorical_crossentropy'): Compiles the model using the RMSprop optimizer and categorical cross-entropy loss function.
+
+print('\n'): Prints a newline for formatting.
+
+print("7_Aditya Hadap"): Prints a string (likely an identifier or name).
+
+print("Begin training..."): Prints a message indicating the start of model training.
+
+model.fit([train_X] * ensemble_num, train_Y, validation_data=[[test_X] * ensemble_num, test_Y], epochs=epochs, batch_size=batch): Trains the model using the training data, with ensemble size replication, and evaluates on the test data. The training process will run for the specified number of epochs and batch size.
+
+print("Training complete..."): Prints a message indicating that training has finished.
+
+np.set_printoptions(precision=2, suppress=True): Sets the print options for NumPy arrays to show 2 decimal places and suppress scientific notation.
+
+for i in range(len(test_X)):: Loops through each test sample.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

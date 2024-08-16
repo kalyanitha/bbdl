@@ -1,0 +1,46 @@
+A=np.array([[1,2],[3,4],[5,6]])
+print("A= ",A)
+print("\n")
+B=np.array([[2,5],[7,4],[4,3]])
+print("B= ",B)
+print("\n")
+C=A*B
+print("Multiplication of two Matrix: \n",C)
+print("\n")
+x=np.array([1,2,3,4])
+y=np.array([5,6,7,8])
+z=x*y
+print("Multiplication of two Vector: ",z)
+print("\n")
+tensor_A=tf.constant([[4,2]],dtype=tf.int32)
+print("A: ",tensor_A)
+tensor_B=tf.constant([[7,4]],dtype=tf.int32)
+print("B: ",tensor_B,"\n")
+tensor_multiply=tf.multiply(tensor_A,tensor_B)
+print("Multiplication of two Tensor: ",tensor_multiply)
+print("\n")
+
+
+
+
+
+np.array([[1, 2], [3, 4], [5, 6]]): This creates a NumPy array with the specified 2D structure, a 3x2 matrix. The matrix A looks like this:
+lua
+
+np.array([[2, 5], [7, 4], [4, 3]]): This creates another 3x2 matrix B
+
+A * B: This performs element-wise multiplication of matrices A and B. In element-wise multiplication, each element in A is multiplied by the corresponding element in B. The result C is:
+
+np.array([1, 2, 3, 4]) and np.array([5, 6, 7, 8]): These create two 1D arrays (vectors) x and y.
+
+x * y: This performs element-wise multiplication of vectors x and y. Each element in x is multiplied by the corresponding element in y. The result z is:
+
+tf.constant([[4, 2]], dtype=tf.int32): This creates a TensorFlow tensor with values [[4, 2]] and a data type of 32-bit integer. This tensor tensor_A looks like:
+
+tf.constant([[7, 4]], dtype=tf.int32): This creates another TensorFlow tensor with values [[7, 4]]. This tensor tensor_B looks like:
+
+tf.multiply(tensor_A, tensor_B): This performs element-wise multiplication of tensors tensor_A and tensor_B. Each element in tensor_A is multiplied by the corresponding element in tensor_B. The result tensor_multiply is:
+
+Matrix Multiplication: Performs element-wise multiplication of two matrices.
+Vector Multiplication: Performs element-wise multiplication of two vectors.
+Tensor Multiplication: Performs element-wise multiplication of two tensors using TensorFlow.
